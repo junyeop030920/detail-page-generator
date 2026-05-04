@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>상세페이지 생성기</title>
+</head>
+<body>
+
+<h1>상세페이지 생성기</h1>
+
+<input placeholder="상품명" id="name"><br><br>
+<input placeholder="색상" id="color"><br><br>
+<input placeholder="원단" id="fabric"><br><br>
+<input placeholder="사이즈" id="size"><br><br>
+<input placeholder="셀링포인트" id="point"><br><br>
+<input placeholder="타겟" id="target"><br><br>
+
+<button onclick="generate()">생성</button>
+
+<pre id="result"></pre>
+
+<script>
+async function generate() {
+  const data = {
+    name: document.getElementById("name").value,
+    color: document.getElementById("color").value,
+    fabric: document.getElementById("fabric").value,
+    size: document.getElementById("size").value,
+    point: document.getElementById("point").value,
+    target: document.getElementById("target").value
+  };
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 여기에_API키"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: `
+너는 의류 상세페이지 배너 카피라이터야.
+
+상품명: ${data.name}
+색상: ${data.color}
+원단: ${data.fabric}
+사이즈: ${data.size}
+셀링포인트: ${data.point}
+타겟: ${data.target}
+
+조건:
+- 짧고 강한 문장
+- 이미지용 카피
+
+출력:
+
+[문제]
+카피
+[이미지 영역]
+
+[해결]
+카피
+[이미지 영역]
+          `
+        }
+      ]
+    })
+  });
+
+  const json = await res.json();
+  document.getElementById("result").innerText =
+    json.choices[0].message.content;
+}
+</script>
+
+</body>
+</html>
