@@ -29,48 +29,16 @@ async function generate() {
     target: document.getElementById("target").value
   };
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch("/api/generate", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer API_key_HERE"
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "user",
-          content: `
-너는 의류 상세페이지 배너 카피라이터야.
-
-상품명: ${data.name}
-색상: ${data.color}
-원단: ${data.fabric}
-사이즈: ${data.size}
-셀링포인트: ${data.point}
-타겟: ${data.target}
-
-조건:
-- 짧고 강한 문장
-- 이미지용 카피
-
-출력:
-
-[문제]
-카피
-[이미지 영역]
-
-[해결]
-카피
-[이미지 영역]
-          `
-        }
-      ]
-    })
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   });
 
   const json = await res.json();
-  document.getElementById("result").innerText =
-    json.choices[0].message.content;
+  document.getElementById("result").innerText = json.result;
 }
 </script>
 
