@@ -1,45 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
+  <meta charset="UTF-8" />
   <title>상세페이지 생성기</title>
 </head>
 <body>
+  <h1>상세페이지 생성기</h1>
 
-<h1>상세페이지 생성기</h1>
+  <input id="name" placeholder="상품명"><br><br>
+  <input id="color" placeholder="색상"><br><br>
+  <input id="fabric" placeholder="원단"><br><br>
+  <input id="size" placeholder="사이즈"><br><br>
+  <input id="point" placeholder="셀링포인트"><br><br>
+  <input id="target" placeholder="타겟"><br><br>
 
-<input placeholder="상품명" id="name"><br><br>
-<input placeholder="색상" id="color"><br><br>
-<input placeholder="원단" id="fabric"><br><br>
-<input placeholder="사이즈" id="size"><br><br>
-<input placeholder="셀링포인트" id="point"><br><br>
-<input placeholder="타겟" id="target"><br><br>
+  <button onclick="generate()">생성</button>
 
-<button onclick="generate()">생성</button>
-<pre id="result"></pre>
+  <pre id="result" style="white-space: pre-wrap; margin-top:20px;"></pre>
 
-<script>
-async function generate() {
-  const data = {
-    name: document.getElementById("name").value,
-    color: document.getElementById("color").value,
-    fabric: document.getElementById("fabric").value,
-    size: document.getElementById("size").value,
-    point: document.getElementById("point").value,
-    target: document.getElementById("target").value
-  };
+  <script>
+    async function generate() {
+      const resultBox = document.getElementById("result");
+      resultBox.innerText = "생성 중...";
 
-  const res = await fetch("/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+      const data = {
+        name: document.getElementById("name").value,
+        color: document.getElementById("color").value,
+        fabric: document.getElementById("fabric").value,
+        size: document.getElementById("size").value,
+        point: document.getElementById("point").value,
+        target: document.getElementById("target").value
+      };
 
-  const json = await res.json();
-  document.getElementById("result").innerText = json.result;
-}
-</script>
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
 
+        const json = await res.json();
+        resultBox.innerText = json.result || "결과가 없습니다.";
+      } catch (error) {
+        resultBox.innerText = "오류 발생: " + error.message;
+      }
+    }
+  </script>
 </body>
 </html>
